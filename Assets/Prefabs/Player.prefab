@@ -47,6 +47,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -69,7 +70,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1458019795
-  m_SortingLayer: 1
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 05e8039e7fe639d40932a6e17a3aae4b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -162,8 +163,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7831047773583619869}
   - component: {fileID: 7831047773583619864}
-  - component: {fileID: 7831047773583619871}
-  - component: {fileID: 7831047773583619870}
   m_Layer: 0
   m_Name: Input
   m_TagString: Untagged
@@ -197,10 +196,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: ed4d03c798b51e94882e82809d8320da, type: 3}
   m_NotificationBehavior: 2
-  m_UIInputModule: {fileID: 7831047773583619870}
+  m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -214,6 +212,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7831047775003359292}
+        m_TargetAssemblyTypeName: 
         m_MethodName: OnMove
         m_Mode: 0
         m_Arguments:
@@ -233,6 +232,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7831047775003359292}
+        m_TargetAssemblyTypeName: 
         m_MethodName: OnJump
         m_Mode: 0
         m_Arguments:
@@ -260,6 +260,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
         m_MethodName: OnPoint
         m_Mode: 0
         m_Arguments:
@@ -299,6 +300,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7831047775003359292}
+        m_TargetAssemblyTypeName: 
         m_MethodName: OnDash
         m_Mode: 0
         m_Arguments:
@@ -316,59 +318,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &7831047773583619871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7831047773583619868}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
-  m_DragThreshold: 10
---- !u!114 &7831047773583619870
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7831047773583619868}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MoveRepeatDelay: 0.5
-  m_MoveRepeatRate: 0.1
-  m_ActionsAsset: {fileID: -944628639613478452, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
-  m_PointAction: {fileID: -4633508443255264943, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
-  m_MoveAction: {fileID: -5301298330535946231, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
-  m_SubmitAction: {fileID: -5241761382206854330, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
-  m_CancelAction: {fileID: 6029121359138870009, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
-  m_LeftClickAction: {fileID: -5881627518337669794, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
-  m_MiddleClickAction: {fileID: 4584091993306748224, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
-  m_RightClickAction: {fileID: -1662401364580148926, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
-  m_ScrollWheelAction: {fileID: 4021362689874017204, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
-  m_TrackedDevicePositionAction: {fileID: -3606180170359608597, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
-  m_TrackedDeviceOrientationAction: {fileID: -8456967478575880400, guid: ed4d03c798b51e94882e82809d8320da,
-    type: 3}
-  m_DeselectOnBackgroundClick: 0
-  m_PointerBehavior: 0
 --- !u!1 &7831047775003359282
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,8 +400,10 @@ MonoBehaviour:
     m_Center: {x: 0, y: 6, z: 0}
     m_Extent: {x: 22, y: 16, z: 0}
   respawn: {fileID: 0}
+  horizontalAngleRange: 35
   velocity: {x: 0, y: 0}
   isGrounded: 1
+  groundNormal: {x: 0, y: 1}
   groundContact: {fileID: 7831047775003359283}
   moveInput: {x: 0, y: 0}
   lastDashDir: 0
@@ -471,10 +422,17 @@ MonoBehaviour:
     maxDepth: 0
     minNormalAngle: 0
     maxNormalAngle: 0
+  hitCount: 0
   overlapColliders:
   - {fileID: 0}
+  hitAngles:
+  - 0
+  - 0
+  - 0
+  - 0
   disableRespawn: 0
   lastHitAngle: 0
+  lastSignedHitAngle: 0
   debugMovement: 0
   debugMovementDuration: 1.5
   inputState:
@@ -486,10 +444,16 @@ MonoBehaviour:
   - {fileID: 433725388}
   - {fileID: 433725387}
   - {fileID: 433725386}
+  contactObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  contactObjectCount: 0
   respawnEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
         m_MethodName: Generate
         m_Mode: 1
         m_Arguments:
@@ -601,9 +565,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sortOrder: 1
   controller: {fileID: 0}
+  wallJump: 1
   jumpInput: 0
   jumpInputDown: 0
   isBoosting: 0
   isJumping: 0
   moveInput: {x: 0, y: 0}
-  launchVelocityX: 0

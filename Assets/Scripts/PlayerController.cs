@@ -48,7 +48,6 @@ public class PlayerController : MonoBehaviour
     }
 
     public void OnMove(InputAction.CallbackContext value) {
-        value.
         lastInputState.rawMoveInput = value.ReadValue<Vector2>();
         lastInputState.moveInput = GetSnapInput(lastInputState.rawMoveInput);
     }

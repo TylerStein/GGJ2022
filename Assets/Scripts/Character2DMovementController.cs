@@ -8,6 +8,7 @@ public struct Character2DMovementState
     [SerializeField] public Vector3 position;
     [SerializeField] public Vector2 velocity;
     [SerializeField] public bool isGrounded;
+    [SerializeField] public Vector2 groundNormal;
     [SerializeField] public Collider2D groundContact;
     [SerializeField] public Vector2 moveInput;
     [SerializeField] public bool isReversing;
@@ -24,9 +25,11 @@ public class Character2DMovementController : MonoBehaviour
     public Bounds worldBounds = new Bounds();
     public Transform respawn;
 
+    [SerializeField] public bool slopes = true;
     [SerializeField] public Vector2 velocity = Vector2.zero;
 
     [SerializeField] public bool isGrounded = false;
+    [SerializeField] public Vector2 groundNormal = Vector2.up;
     [SerializeField] public Collider2D groundContact = null;
 
     [SerializeField] public Vector2 moveInput = Vector2.zero;
@@ -272,9 +275,20 @@ public class Character2DMovementController : MonoBehaviour
         velocity.y = Mathf.Clamp(velocity.y, minVelocity.y, maxVelocity.y);
     }
 
+    private Vector2 RotatedVelocity(Vector2 velocity)
+    {
+        if (isGrounded && slopes)
+        {
+            velocity = new Vector2(groundNormal.y * -1f, groundNormal.x) * velocity.x;
+        }
+
+        return velocity;
+    }
+
     private void UpdateCollision(float deltaTime, ref Vector2 velocity, ref Vector3 position) {
         contactObjectCount = 0;
-        Vector3 move = velocity * Time.deltaTime;
+        Vector3 rotatedVelocity = RotatedVelocity(velocity);
+        Vector3 move = rotatedVelocity * Time.deltaTime;
         hitCount = collider.Cast(move.normalized, colliderContactFilter, raycastHits, move.magnitude);
 
         bool wasGrounded = isGrounded;
@@ -288,18 +302,21 @@ public class Character2DMovementController : MonoBehaviour
             // Move up through ground
             if (raycastHits[i].collider is EdgeCollider2D) {
                 if (hitAngles[i] > 90f && velocity.y > 0f) {
+                    Debug.Log("Move up through ground");
                     continue;
                 }
             }
 
             // Hit something solid
             position = raycastHits[i].centroid;
-            if (hitAngles[i] == 180f || hitAngles[i] == 0f) {
+            if ((hitAngles[i] >= 150f && hitAngles[i] <= 210f) || (hitAngles[i] >= 330f || hitAngles[i] <= 30f))
+            {
                 // Ground or ceiling
                 if (raycastHits[i].collider is EdgeCollider2D) {
                     // Is edge, allow passthrough
                     if (velocity.y <= 0f) {
                         isGrounded = true;
+                        groundNormal = -raycastHits[i].normal;
                         contactObjects[contactObjectCount] = raycastHits[i].collider.gameObject;
                         contactObjectCount++;
                         velocity.y = 0f;
@@ -308,6 +325,7 @@ public class Character2DMovementController : MonoBehaviour
                     if (velocity.y <= 0f && raycastHits[i].point.y < transform.position.y) {
                         // Is falling and below
                         isGrounded = true;
+                        groundNormal = raycastHits[i].normal;
                         contactObjects[contactObjectCount] = raycastHits[i].collider.gameObject;
                         contactObjectCount++;
                         velocity.y = 0f;
@@ -318,7 +336,8 @@ public class Character2DMovementController : MonoBehaviour
                         contactObjectCount++;
                     }
                 }
-            } else if (hitAngles[i] == 90f) {
+                Debug.DrawRay(transform.position, groundNormal, Color.yellow);
+            } else if (hitAngles[i] > 70f && hitAngles[i] < 110f) {
                 if (raycastHits[i].point.x > transform.position.x && velocity.x > 0f) {
                     // to the right
                     velocity.x = 0f;
@@ -345,7 +364,7 @@ public class Character2DMovementController : MonoBehaviour
     }
 
     private void UpdateTransform(float deltaTime, Vector3 position, Vector2 velocity) {
-        transform.position = position + (Vector3)(velocity * deltaTime);
+        transform.position = position + (Vector3)(RotatedVelocity(velocity) * deltaTime);
         this.velocity = velocity;
     }
 
@@ -360,6 +379,7 @@ public class Character2DMovementController : MonoBehaviour
             position = transform.position,
             velocity = velocity,
             isGrounded = isGrounded,
+            groundNormal = groundNormal,
             groundContact = groundContact,
             moveInput = moveInput,
             isReversing = isReversing,
@@ -372,6 +392,7 @@ public class Character2DMovementController : MonoBehaviour
         transform.position = state.position;
         velocity = state.velocity;
         isGrounded = state.isGrounded;
+        groundNormal = state.groundNormal;
         groundContact = state.groundContact;
         moveInput = state.moveInput;
         isReversing = state.isReversing;
