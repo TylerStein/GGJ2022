@@ -14,9 +14,8 @@ public enum EInputSnap
 public class PlayerController : MonoBehaviour
 {
     public Animator squashStretchAnimator;
-    public SquashStretchController squashStretchController;
     public SpriteRenderer spriteRenderer;
-    public Character2DMovementController movement;
+    public GenericCharacter2DMovementController movement;
     public Animator playerAnimator;
     public InputState lastInputState;
     public EInputSnap inputSnapMode;

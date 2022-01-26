@@ -2,66 +2,36 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-[System.Serializable]
-public struct Character2DMovementState
-{
-    [SerializeField] public Vector3 position;
-    [SerializeField] public Vector2 velocity;
-    [SerializeField] public bool isGrounded;
-    [SerializeField] public Vector2 groundNormal;
-    [SerializeField] public Collider2D groundContact;
-    [SerializeField] public Vector2 moveInput;
-    [SerializeField] public bool isReversing;
-    [SerializeField] public ContactFilter2D colliderContactFilter;
-    [SerializeField] public Collider2D[] overlapColliders;
-}
 
 [RequireComponent(typeof(Collider2D))]
-public class Character2DMovementController : MonoBehaviour
+public class Character2DMovementController : GenericCharacter2DMovementController
 {
-    [SerializeField] private Character2DMovementSettings movementSettings;
-    public Character2DMovementSettings Settings { get => movementSettings; }
-
-    public Bounds worldBounds = new Bounds();
-    public Transform respawn;
-
     [SerializeField] public bool slopes = true;
     [SerializeField] public Vector2 velocity = Vector2.zero;
-
-    [SerializeField] public bool isGrounded = false;
     [SerializeField] public Vector2 groundNormal = Vector2.up;
-    [SerializeField] public Collider2D groundContact = null;
-
-    [SerializeField] public Vector2 moveInput = Vector2.zero;
 
     [SerializeField] public float lastDashDir = 0f;
     [SerializeField] public bool isReversing = false;
-    [SerializeField] public ContactFilter2D colliderContactFilter;
 
-    [SerializeField] public int hitCount = 0;
+    [SerializeField] public int horizontalHitCount = 0;
+    [SerializeField] public float horizontalHitAngle = 0f;
+    [SerializeField] public RaycastHit2D[] horizontalRaycastHits = new RaycastHit2D[2];
+
+    [SerializeField] public int verticalHitCount = 0;
+    [SerializeField] public float verticalHitAngle = 0f;
+    [SerializeField] public RaycastHit2D[] verticalRaycastHits = new RaycastHit2D[2];
+
     [SerializeField] public Collider2D[] overlapColliders = new Collider2D[4];
-    [SerializeField] public float[] hitAngles = new float[4];
-    [SerializeField] public RaycastHit2D[] raycastHits = new RaycastHit2D[4];
 
-    [SerializeField] public bool disableRespawn = false;
-    [SerializeField] public float lastHitAngle = 0f;
-    [SerializeField] public float lastSignedHitAngle = 0f;
 
     [SerializeField] public bool debugMovement = false;
     [SerializeField] public float debugMovementDuration = 1.5f;
 
-    [SerializeField] public InputState inputState;
-
     [SerializeField] public List<Character2DMovementAbility> movementAbilities = new List<Character2DMovementAbility>();
 
-    private new Transform transform;
-    private new BoxCollider2D collider;
-    private new Rigidbody2D rigidbody;
-
+    public SquashStretchController squashStretchController;
     public GameObject[] contactObjects = new GameObject[3];
     public int contactObjectCount = 0;
-
-    private bool shouldRespawn = false;
     public UnityEvent respawnEvent = new UnityEvent();
 
     /**
@@ -122,13 +92,11 @@ public class Character2DMovementController : MonoBehaviour
     *
     */
 
-    public Vector2 MoveInput { get => moveInput; set => moveInput = value; }
-    public float MoveInputX { get => moveInput.x; set => moveInput.x = value; }
-    public float MoveInputY { get => moveInput.y; set => moveInput.y = value; }
-
-    public void SetInputState(InputState input) {
-        moveInput.x = input.moveInput.x;
-        foreach (var ability in movementAbilities) {
+    public override void SetInputState(InputState input)
+    {
+        base.SetInputState(input);
+        foreach (var ability in movementAbilities)
+        {
             ability.SetInputState(input);
         }
     }
@@ -149,18 +117,8 @@ public class Character2DMovementController : MonoBehaviour
         return false;
     }
 
-    private void Awake() {
-        transform = GetComponent<Transform>();
-        collider = GetComponent<BoxCollider2D>();
-
-        // colliderLayerMask = Physics2D.GetLayerCollisionMask(gameObject.layer);
-
-        ContactFilter2D contactFilter = new ContactFilter2D();
-        contactFilter.useLayerMask = true;
-        contactFilter.layerMask = Physics2D.GetLayerCollisionMask(gameObject.layer);
-        contactFilter.useTriggers = false;
-        colliderContactFilter = contactFilter;
-
+    public override void Awake() {
+        base.Awake();
         foreach (var ability in movementAbilities) {
             ability.Controller = this;
         }
@@ -171,10 +129,8 @@ public class Character2DMovementController : MonoBehaviour
         movementAbilities.Sort((a, b) => a.SortOrder - b.SortOrder);
     }
 
-    private void Update() {
-        if (worldBounds.Contains(transform.position) == false && !disableRespawn) {
-            shouldRespawn = true;
-        }
+    public override void Update() {
+        base.Update();
 
         if (shouldRespawn) {
             shouldRespawn = false;
@@ -184,10 +140,6 @@ public class Character2DMovementController : MonoBehaviour
         } else {
             UpdateMovement(Time.deltaTime);
         }
-    }
-
-    public void Respawn() {
-        if (!disableRespawn) shouldRespawn = true;
     }
 
     public void UpdateMovement(float deltaTime) {
@@ -275,81 +227,74 @@ public class Character2DMovementController : MonoBehaviour
         velocity.y = Mathf.Clamp(velocity.y, minVelocity.y, maxVelocity.y);
     }
 
-    private Vector2 RotatedVelocity(Vector2 velocity)
-    {
-        if (isGrounded && slopes)
-        {
-            velocity = new Vector2(groundNormal.y * -1f, groundNormal.x) * velocity.x;
-        }
-
-        return velocity;
-    }
-
     private void UpdateCollision(float deltaTime, ref Vector2 velocity, ref Vector3 position) {
         contactObjectCount = 0;
-        Vector3 rotatedVelocity = RotatedVelocity(velocity);
-        Vector3 move = rotatedVelocity * Time.deltaTime;
-        hitCount = collider.Cast(move.normalized, colliderContactFilter, raycastHits, move.magnitude);
-
+        Vector3 move = velocity * Time.deltaTime;
         bool wasGrounded = isGrounded;
         isGrounded = false;
-        for (int i = 0; i < hitCount; i++) {
-            if (raycastHits[i].collider == collider) continue;
 
-            hitAngles[i] = Vector2.Angle(raycastHits[i].normal, Vector2.up);
-            lastHitAngle = hitAngles[i];
+        // horizontal move
+        Vector2 horizontalDirection = Vector2.right * Mathf.Sign(move.x);
+        horizontalHitCount = collider.Cast(horizontalDirection, colliderContactFilter, horizontalRaycastHits, Mathf.Abs(move.x));
+        for (int i = 0; i < horizontalHitCount; i++)
+        {
+            if (horizontalRaycastHits[i].collider == collider) continue;
+            horizontalHitAngle = Vector2.Angle(horizontalRaycastHits[i].normal, Vector2.up);
+            Vector2 projectedPosition = horizontalDirection * horizontalRaycastHits[i].distance;
 
-            // Move up through ground
-            if (raycastHits[i].collider is EdgeCollider2D) {
-                if (hitAngles[i] > 90f && velocity.y > 0f) {
-                    Debug.Log("Move up through ground");
-                    continue;
-                }
-            }
-
-            // Hit something solid
-            position = raycastHits[i].centroid;
-            if ((hitAngles[i] >= 150f && hitAngles[i] <= 210f) || (hitAngles[i] >= 330f || hitAngles[i] <= 30f))
+            bool newContact = false;
+            if (horizontalRaycastHits[i].point.x > transform.position.x && velocity.x > 0f)
             {
-                // Ground or ceiling
-                if (raycastHits[i].collider is EdgeCollider2D) {
-                    // Is edge, allow passthrough
-                    if (velocity.y <= 0f) {
-                        isGrounded = true;
-                        groundNormal = -raycastHits[i].normal;
-                        contactObjects[contactObjectCount] = raycastHits[i].collider.gameObject;
-                        contactObjectCount++;
-                        velocity.y = 0f;
-                    }
-                } else {
-                    if (velocity.y <= 0f && raycastHits[i].point.y < transform.position.y) {
-                        // Is falling and below
-                        isGrounded = true;
-                        groundNormal = raycastHits[i].normal;
-                        contactObjects[contactObjectCount] = raycastHits[i].collider.gameObject;
-                        contactObjectCount++;
-                        velocity.y = 0f;
-                    } else if (velocity.y >= 0f && raycastHits[i].point.y > transform.position.y) {
-                        // Is rising and above
-                        velocity.y = 0f;
-                        contactObjects[contactObjectCount] = raycastHits[i].collider.gameObject;
-                        contactObjectCount++;
-                    }
-                }
-                Debug.DrawRay(transform.position, groundNormal, Color.yellow);
-            } else if (hitAngles[i] > 70f && hitAngles[i] < 110f) {
-                if (raycastHits[i].point.x > transform.position.x && velocity.x > 0f) {
-                    // to the right
-                    velocity.x = 0f;
-                    contactObjects[contactObjectCount] = raycastHits[i].collider.gameObject;
-                    contactObjectCount++;
-                } else if (raycastHits[i].point.x < transform.position.x && velocity.x < 0f) {
-                    // to the left
-                    velocity.x = 0f;
-                    contactObjects[contactObjectCount] = raycastHits[i].collider.gameObject;
-                    contactObjectCount++;
-                }
+                // Right side contact
+                Debug.Log("Hit right wall");
+                newContact = true;
+            } else if (horizontalRaycastHits[i].point.x < transform.position.x && velocity.x < 0f)
+            {
+                Debug.Log("Hit left wall");
+                newContact = true;
             }
+
+            if (newContact)
+            {
+                contactObjects[contactObjectCount] = horizontalRaycastHits[i].collider.gameObject;
+                contactObjectCount++;
+                velocity.x = 0f;
+                Debug.DrawRay(transform.position, horizontalRaycastHits[i].normal, Color.red);
+            }
+
+            Debug.DrawRay(verticalRaycastHits[i].point, verticalRaycastHits[i].normal, Color.blue);
+        }
+
+        // vertical move
+        Vector2 verticalDirection = Vector2.up * Mathf.Sign(move.y);
+        verticalHitCount = collider.Cast(verticalDirection, colliderContactFilter, verticalRaycastHits, Mathf.Abs(move.y));
+        for (int i = 0; i < verticalHitCount; i++)
+        {
+            if (horizontalRaycastHits[i].collider == collider) continue;
+            verticalHitAngle = Vector2.Angle(verticalRaycastHits[i].normal, Vector2.up);
+            Vector2 projectedPosition = verticalDirection * horizontalRaycastHits[i].distance;
+
+            bool newContact = false;
+            if (verticalRaycastHits[i].point.y > transform.position.y && velocity.y > 0f)
+            {
+                Debug.Log("Hit ceiling");
+                newContact = true;
+            } else if (verticalRaycastHits[i].point.y < transform.position.y && velocity.y < 0f)
+            {
+                isGrounded = true;
+                newContact = true;
+                groundNormal = verticalRaycastHits[i].normal;
+            }
+
+            if (newContact)
+            {
+                contactObjects[contactObjectCount] = verticalRaycastHits[i].collider.gameObject;
+                contactObjectCount++;
+                velocity.y = 0f;
+                Debug.DrawRay(transform.position, verticalRaycastHits[i].normal, Color.green);
+            }
+
+            Debug.DrawRay(verticalRaycastHits[i].point, verticalRaycastHits[i].normal, Color.blue);
         }
 
         if (!isGrounded && wasGrounded) {
@@ -364,7 +309,7 @@ public class Character2DMovementController : MonoBehaviour
     }
 
     private void UpdateTransform(float deltaTime, Vector3 position, Vector2 velocity) {
-        transform.position = position + (Vector3)(RotatedVelocity(velocity) * deltaTime);
+        transform.position = position + (Vector3)velocity * deltaTime;
         this.velocity = velocity;
     }
 
@@ -380,7 +325,6 @@ public class Character2DMovementController : MonoBehaviour
             velocity = velocity,
             isGrounded = isGrounded,
             groundNormal = groundNormal,
-            groundContact = groundContact,
             moveInput = moveInput,
             isReversing = isReversing,
             colliderContactFilter = colliderContactFilter,
@@ -393,15 +337,9 @@ public class Character2DMovementController : MonoBehaviour
         velocity = state.velocity;
         isGrounded = state.isGrounded;
         groundNormal = state.groundNormal;
-        groundContact = state.groundContact;
         moveInput = state.moveInput;
         isReversing = state.isReversing;
         colliderContactFilter = state.colliderContactFilter;
         overlapColliders = state.overlapColliders;
-    }
-
-    public void OnDrawGizmos() {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(worldBounds.center, worldBounds.size);
     }
 }

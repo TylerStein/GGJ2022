@@ -31,5 +31,6 @@ MonoBehaviour:
   airDashDecayXY: 150
   airDashIgnoreVelX: 1
   airDashIgnoreVelY: 1
+  wallJumpForceXY: 38
   groundDashMaxVelocityX: 16
   groundDashAccelerationX: 20

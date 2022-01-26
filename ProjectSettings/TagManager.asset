@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - World
   layers:
   - Default
   - TransparentFX
@@ -11,10 +12,10 @@ TagManager:
   - 
   - Water
   - UI
-  - Player1
-  - Player2
-  - Player1Block
-  - Player2Block
+  - LightEntity
+  - DarkEntity
+  - BlocksLight
+  - BlocksDark
   - 
   - 
   - 
@@ -40,6 +41,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 2284062947
+    locked: 0
+  - name: Obstacles
+    uniqueID: 3412689497
     locked: 0
   - name: Player
     uniqueID: 2133370081

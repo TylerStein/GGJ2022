@@ -32,6 +32,9 @@ public class Character2DMovementSettings : ScriptableObject
     public bool airDashIgnoreVelX = true;
     public bool airDashIgnoreVelY = true;
 
+    [Header("Ability: Wall Jump")]
+    public float wallJumpForceXY = 60f;
+
     [Header("Ability: Ground Dash")]
     public float groundDashMaxVelocityX = 30f;
     public float groundDashAccelerationX = 30f;

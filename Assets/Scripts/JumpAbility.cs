@@ -56,22 +56,23 @@ public class JumpAbility : Character2DMovementAbility
 
                 return;
             } else {
-                for (int i = 0; i < controller.hitCount; i++) {
-                    if (controller.hitAngles[i] == 90f) {
+                for (int i = 0; i < controller.horizontalHitCount; i++) {
+                    if (controller.horizontalHitAngle == 90f) {
                         // to the left or right
+                        currentVelocity.y = 0f;
                         isJumping = true;
                         isBoosting = true;
 
-                        float xDir = controller.raycastHits[i].normal.x;
+                        float xDir = controller.horizontalRaycastHits[i].normal.x;
 
-                        currentVelocity.x = controller.Settings.airDashAccelerationXY * xDir;
-                        currentVelocity.y = controller.Settings.airDashAccelerationXY;
+                        currentVelocity.x = controller.Settings.wallJumpForceXY * xDir;
+                        currentVelocity.y = controller.Settings.wallJumpForceXY;
 
-                        changeSpeed.y = controller.Settings.airDashAccelerationXY;
-                        changeSpeed.x = controller.Settings.airDashAccelerationXY * xDir;
+                        changeSpeed.y = controller.Settings.wallJumpForceXY;
+                        changeSpeed.x = controller.Settings.wallJumpForceXY * xDir;
 
-                        targetVelocity.y = controller.Settings.airDashAccelerationXY;
-                        targetVelocity.x = controller.Settings.airDashAccelerationXY * xDir;
+                        targetVelocity.y = controller.Settings.wallJumpForceXY;
+                        targetVelocity.x = controller.Settings.wallJumpForceXY * xDir;
 
                         return;
                     }
