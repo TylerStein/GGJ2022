@@ -16,14 +16,18 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
     [SerializeField] public int horizontalHitCount = 0;
     [SerializeField] public float horizontalHitAngle = 0f;
     [SerializeField] public RaycastHit2D[] horizontalRaycastHits = new RaycastHit2D[2];
+    [SerializeField] public Transform horizontalPushSource = null;
+    [SerializeField] public Vector2 lastHorizontalPushSourcePos = Vector2.zero;
 
     [SerializeField] public int verticalHitCount = 0;
     [SerializeField] public float verticalHitAngle = 0f;
     [SerializeField] public RaycastHit2D[] verticalRaycastHits = new RaycastHit2D[2];
+    [SerializeField] public Transform verticalPushSource = null;
+    [SerializeField] public Vector2 lastVerticalPushSourcePos = Vector2.zero;
 
     [SerializeField] public Collider2D[] overlapColliders = new Collider2D[4];
 
-
+    [SerializeField] public float squishDist = 0.85f;
     [SerializeField] public bool debugMovement = false;
     [SerializeField] public float debugMovementDuration = 1.5f;
 
@@ -171,7 +175,26 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
         }
     }
 
-    private void UpdatePreMovement(float deltaTime) {
+    private void UpdatePreMovement(float deltaTime)
+    {
+        if (horizontalPushSource)
+        {
+            Vector2 newPos = horizontalPushSource.position;
+            Vector2 delta = newPos - lastHorizontalPushSourcePos;
+            transform.position += (Vector3)delta;
+            lastHorizontalPushSourcePos = newPos;
+            horizontalPushSource = null;
+        }
+
+        if (verticalPushSource)
+        {
+            Vector2 newPos = verticalPushSource.position;
+            Vector2 delta = newPos - lastVerticalPushSourcePos;
+            transform.position += (Vector3)delta;
+            lastVerticalPushSourcePos = newPos;
+            verticalPushSource = null;
+        }
+
         foreach (var ability in movementAbilities) {
             ability.UpdatePreMovement(deltaTime);
         }
@@ -240,7 +263,7 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
         {
             if (horizontalRaycastHits[i].collider == collider) continue;
             horizontalHitAngle = Vector2.Angle(horizontalRaycastHits[i].normal, Vector2.up);
-            Vector2 projectedPosition = horizontalDirection * horizontalRaycastHits[i].distance;
+            // transform.position = horizontalDirection * horizontalRaycastHits[i].distance;
 
             bool newContact = false;
             if (horizontalRaycastHits[i].point.x > transform.position.x && velocity.x > 0f)
@@ -262,17 +285,19 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
                 Debug.DrawRay(transform.position, horizontalRaycastHits[i].normal, Color.red);
             }
 
-            Debug.DrawRay(verticalRaycastHits[i].point, verticalRaycastHits[i].normal, Color.blue);
+            horizontalPushSource = horizontalRaycastHits[i].transform;
+            lastHorizontalPushSourcePos = horizontalPushSource.position;
+            Debug.DrawRay(horizontalRaycastHits[i].point, horizontalRaycastHits[i].normal, Color.blue);
         }
 
         // vertical move
         Vector2 verticalDirection = Vector2.up * Mathf.Sign(move.y);
         verticalHitCount = collider.Cast(verticalDirection, colliderContactFilter, verticalRaycastHits, Mathf.Abs(move.y));
-        for (int i = 0; i < verticalHitCount; i++)
+        for (int i = verticalHitCount - 1; i >= 0; i--)
         {
-            if (horizontalRaycastHits[i].collider == collider) continue;
+            if (verticalRaycastHits[i].collider == collider) continue;
             verticalHitAngle = Vector2.Angle(verticalRaycastHits[i].normal, Vector2.up);
-            Vector2 projectedPosition = verticalDirection * horizontalRaycastHits[i].distance;
+            // transform.position = verticalDirection * verticalRaycastHits[i].distance;
 
             bool newContact = false;
             if (verticalRaycastHits[i].point.y > transform.position.y && velocity.y > 0f)
@@ -294,7 +319,32 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
                 Debug.DrawRay(transform.position, verticalRaycastHits[i].normal, Color.green);
             }
 
+
+            verticalPushSource = verticalRaycastHits[i].transform;
+            lastVerticalPushSourcePos = verticalPushSource.position;
             Debug.DrawRay(verticalRaycastHits[i].point, verticalRaycastHits[i].normal, Color.blue);
+        }
+
+        if (verticalHitCount > 1)
+        {
+            float point1 = verticalRaycastHits[0].point.y;
+            float point2 = verticalRaycastHits[1].point.y;
+            float posY = transform.position.y;
+            float dist = Mathf.Infinity;
+            if (point1 > posY && point2 < posY)
+            {
+                dist = point1 - point2;
+            }
+            else if (point1 < posY && point2 > posY)
+            {
+                dist = point2 - point1;
+            }
+
+            if (dist < squishDist)
+            {
+                Debug.Log("Squished");
+                shouldRespawn = true;
+            }
         }
 
         if (!isGrounded && wasGrounded) {

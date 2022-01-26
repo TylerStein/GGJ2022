@@ -235,7 +235,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5.708157
+  orthographic size: 5.709363
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -592,6 +592,10 @@ PrefabInstance:
       propertyPath: m_UIInputModule
       value: 
       objectReference: {fileID: 406274541}
+    - target: {fileID: 9009048945662693229, guid: 0c07ee7bf05534f49aa34fbdaf0aa916, type: 3}
+      propertyPath: m_NeverAutoSwitchControlSchemes
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9009048946059083847, guid: 0c07ee7bf05534f49aa34fbdaf0aa916, type: 3}
       propertyPath: m_Name
       value: Squish
@@ -666,6 +670,10 @@ PrefabInstance:
       propertyPath: m_UIInputModule
       value: 
       objectReference: {fileID: 406274541}
+    - target: {fileID: 375560403806108823, guid: 26125a2967316aa4c9c9a6fc0d97ee87, type: 3}
+      propertyPath: m_NeverAutoSwitchControlSchemes
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 375560405326508977, guid: 26125a2967316aa4c9c9a6fc0d97ee87, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -718,6 +726,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lax
       objectReference: {fileID: 0}
+    - target: {fileID: 3525694992485899067, guid: 26125a2967316aa4c9c9a6fc0d97ee87, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 68e4e1e85496d1445a7d6cb12d46d0ae, type: 3}
+    - target: {fileID: 8598132346786459837, guid: 26125a2967316aa4c9c9a6fc0d97ee87, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 498024d674203ca4f9acdc434389ea9f, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 26125a2967316aa4c9c9a6fc0d97ee87, type: 3}
 --- !u!4 &5410708407856147090 stripped
