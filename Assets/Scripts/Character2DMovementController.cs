@@ -2,6 +2,12 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+[System.Serializable]
+public enum ECharacterType
+{
+    SQUISH,
+    LAX
+}
 
 [RequireComponent(typeof(Collider2D))]
 public class Character2DMovementController : GenericCharacter2DMovementController
@@ -24,12 +30,16 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
     [SerializeField] public RaycastHit2D[] verticalRaycastHits = new RaycastHit2D[2];
     [SerializeField] public Transform verticalPushSource = null;
     [SerializeField] public Vector2 lastVerticalPushSourcePos = Vector2.zero;
+    [SerializeField] public bool ignorePush = false;
 
+    [SerializeField] public int overlapCount = 0;
     [SerializeField] public Collider2D[] overlapColliders = new Collider2D[4];
 
     [SerializeField] public float squishDist = 0.85f;
     [SerializeField] public bool debugMovement = false;
     [SerializeField] public float debugMovementDuration = 1.5f;
+
+    [SerializeField] public ECharacterType characterType = 0;
 
     [SerializeField] public List<Character2DMovementAbility> movementAbilities = new List<Character2DMovementAbility>();
 
@@ -112,8 +122,8 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
     }
 
     public bool CheckOverlap(Vector3 position, bool useTriggers = false) {
-        int count = Physics2D.OverlapBox(collider.bounds.center, collider.bounds.size, 0f, colliderContactFilter, overlapColliders);
-        if (count > 1) {
+        overlapCount = Physics2D.OverlapBox(collider.bounds.center, collider.bounds.size, 0f, colliderContactFilter, overlapColliders);
+        if (overlapCount > 1) {
             Debug.Log("CheckOverlap Collided with " + overlapColliders[0].name, this);
             return true;
         }
@@ -177,22 +187,25 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
 
     private void UpdatePreMovement(float deltaTime)
     {
-        if (horizontalPushSource)
+        if (!ignorePush)
         {
-            Vector2 newPos = horizontalPushSource.position;
-            Vector2 delta = newPos - lastHorizontalPushSourcePos;
-            transform.position += (Vector3)delta;
-            lastHorizontalPushSourcePos = newPos;
-            horizontalPushSource = null;
-        }
+            if (horizontalPushSource)
+            {
+                Vector2 newPos = horizontalPushSource.position;
+                Vector2 delta = newPos - lastHorizontalPushSourcePos;
+                transform.position += (Vector3)delta;
+                lastHorizontalPushSourcePos = newPos;
+                horizontalPushSource = null;
+            }
 
-        if (verticalPushSource)
-        {
-            Vector2 newPos = verticalPushSource.position;
-            Vector2 delta = newPos - lastVerticalPushSourcePos;
-            transform.position += (Vector3)delta;
-            lastVerticalPushSourcePos = newPos;
-            verticalPushSource = null;
+            if (verticalPushSource)
+            {
+                Vector2 newPos = verticalPushSource.position;
+                Vector2 delta = newPos - lastVerticalPushSourcePos;
+                transform.position += (Vector3)delta;
+                lastVerticalPushSourcePos = newPos;
+                verticalPushSource = null;
+            }
         }
 
         foreach (var ability in movementAbilities) {
@@ -269,11 +282,11 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
             if (horizontalRaycastHits[i].point.x > transform.position.x && velocity.x > 0f)
             {
                 // Right side contact
-                Debug.Log("Hit right wall");
+                //Debug.Log("Hit right wall");
                 newContact = true;
             } else if (horizontalRaycastHits[i].point.x < transform.position.x && velocity.x < 0f)
             {
-                Debug.Log("Hit left wall");
+                //Debug.Log("Hit left wall");
                 newContact = true;
             }
 
@@ -283,6 +296,10 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
                 contactObjectCount++;
                 velocity.x = 0f;
                 Debug.DrawRay(transform.position, horizontalRaycastHits[i].normal, Color.red);
+                foreach (var ability in movementAbilities)
+                {
+                    ability.OnContact(horizontalRaycastHits[i]);
+                }
             }
 
             horizontalPushSource = horizontalRaycastHits[i].transform;
@@ -302,7 +319,7 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
             bool newContact = false;
             if (verticalRaycastHits[i].point.y > transform.position.y && velocity.y > 0f)
             {
-                Debug.Log("Hit ceiling");
+                //Debug.Log("Hit ceiling");
                 newContact = true;
             } else if (verticalRaycastHits[i].point.y < transform.position.y && velocity.y < 0f)
             {
@@ -317,6 +334,10 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
                 contactObjectCount++;
                 velocity.y = 0f;
                 Debug.DrawRay(transform.position, verticalRaycastHits[i].normal, Color.green);
+                foreach (var ability in movementAbilities)
+                {
+                    ability.OnContact(verticalRaycastHits[i]);
+                }
             }
 
 
@@ -340,7 +361,7 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
                 dist = point2 - point1;
             }
 
-            if (dist < squishDist)
+            if (dist < squishDist && !ignorePush)
             {
                 Debug.Log("Squished");
                 shouldRespawn = true;

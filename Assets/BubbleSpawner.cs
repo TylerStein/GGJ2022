@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BubbleSpawner : MonoBehaviour
 {
+    public ECharacterType forCharacter = ECharacterType.LAX;
     public GameObject bubblePrefab;
     public float spawnEverySeconds = 2f;
     public float despawnAfter = 10f;
@@ -44,8 +45,7 @@ public class BubbleSpawner : MonoBehaviour
         bubble.transform.parent = transform;
 
         Bubble script = bubble.GetComponent<Bubble>();
-        script.moveDirection = transform.up;
-        script.moveSpeed = bubbleSpeed;
-        script.despawnAfter = despawnAfter;
+        script.SetSpawnData(transform.up, bubbleSpeed, despawnAfter);
+        script.SetCharacter(forCharacter);
     }
 }

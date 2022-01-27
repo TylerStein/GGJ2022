@@ -14,4 +14,5 @@ public abstract class Character2DMovementAbility : MonoBehaviour
     public virtual void UpdatePostMovement(float deltaTime) { }
     public virtual void OnGrounded(float deltaTime, ref Vector2 velocity, ref Vector3 position) { }
     public virtual void OnFalling(float deltaTime, ref Vector2 velocity, ref Vector3 position) { }
+    public virtual void OnContact(RaycastHit2D hit) { }
 }

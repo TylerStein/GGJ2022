@@ -334,6 +334,7 @@ GameObject:
   - component: {fileID: 1273368868317800383}
   - component: {fileID: 1273368868317800382}
   - component: {fileID: 1273368868317800377}
+  - component: {fileID: 4854586034956480413}
   m_Layer: 6
   m_Name: Squish
   m_TagString: Untagged
@@ -424,12 +425,19 @@ MonoBehaviour:
   isReversing: 0
   horizontalHitCount: 0
   horizontalHitAngle: 0
+  horizontalPushSource: {fileID: 0}
+  lastHorizontalPushSourcePos: {x: 0, y: 0}
   verticalHitCount: 0
   verticalHitAngle: 0
+  verticalPushSource: {fileID: 0}
+  lastVerticalPushSourcePos: {x: 0, y: 0}
+  overlapCount: 0
   overlapColliders:
   - {fileID: 0}
+  squishDist: 0.85
   debugMovement: 0
   debugMovementDuration: 1.5
+  characterType: 0
   movementAbilities:
   - {fileID: 1273368868317800377}
   - {fileID: 1273368868317800382}
@@ -562,3 +570,23 @@ MonoBehaviour:
   isBoosting: 0
   isJumping: 0
   moveInput: {x: 0, y: 0}
+--- !u!114 &4854586034956480413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9009048946059083847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1485bd16c41ec784280430c6a15d4426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sortOrder: 0
+  controller: {fileID: 9009048946059083848}
+  jumpInput: 0
+  moveInput: {x: 0, y: 0}
+  activeBubble: {fileID: 0}
+  leavingBubble: 0
+  bubbleTag: Bubble
+  contactThisFrame: 0
