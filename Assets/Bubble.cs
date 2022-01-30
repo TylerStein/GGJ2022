@@ -11,7 +11,10 @@ public class Bubble : MonoBehaviour
     public string blockLaxLayerName = "BlocksDark";
     public string lightEntityLayerName = "LightEntity";
     public string darkEntityLayerName = "DarkEntity";
+    public Color laxColor = Color.black;
+    public Color squishColor = Color.white;
     public GameObject platformObject;
+    public SpriteRenderer spriteRenderer;
 
     private Vector3 moveDirection = Vector3.up;
     private float moveSpeed = 5f;
@@ -33,10 +36,12 @@ public class Bubble : MonoBehaviour
         if (forCharacter == ECharacterType.LAX)
         {
             platformObject.layer = LayerMask.NameToLayer(blockSquishLayerName);
+            spriteRenderer.color = laxColor;
         }
         else
         {
             platformObject.layer = LayerMask.NameToLayer(blockLaxLayerName);
+            spriteRenderer.color = squishColor;
         }
     }
 

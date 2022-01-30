@@ -128,7 +128,10 @@ MonoBehaviour:
   blockLaxLayerName: BlocksDark
   lightEntityLayerName: LightEntity
   darkEntityLayerName: DarkEntity
+  laxColor: {r: 0, g: 0, b: 0, a: 1}
+  squishColor: {r: 1, g: 1, b: 1, a: 1}
   platformObject: {fileID: 1284105348846279444}
+  spriteRenderer: {fileID: 2757562886963031275}
 --- !u!58 &7129980540275085353
 CircleCollider2D:
   m_ObjectHideFlags: 0

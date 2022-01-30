@@ -12,7 +12,6 @@ public enum ECharacterType
 [RequireComponent(typeof(Collider2D))]
 public class Character2DMovementController : GenericCharacter2DMovementController
 {
-    [SerializeField] public bool slopes = true;
     [SerializeField] public Vector2 velocity = Vector2.zero;
     [SerializeField] public Vector2 groundNormal = Vector2.up;
 
@@ -20,13 +19,13 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
     [SerializeField] public bool isReversing = false;
 
     [SerializeField] public int horizontalHitCount = 0;
-    [SerializeField] public float horizontalHitAngle = 0f;
+    [SerializeField] public float[] horizontalHitAngles = new float[2];
     [SerializeField] public RaycastHit2D[] horizontalRaycastHits = new RaycastHit2D[2];
     [SerializeField] public Transform horizontalPushSource = null;
     [SerializeField] public Vector2 lastHorizontalPushSourcePos = Vector2.zero;
 
     [SerializeField] public int verticalHitCount = 0;
-    [SerializeField] public float verticalHitAngle = 0f;
+    [SerializeField] public float[] verticalHitAngles = new float[2];
     [SerializeField] public RaycastHit2D[] verticalRaycastHits = new RaycastHit2D[2];
     [SerializeField] public Transform verticalPushSource = null;
     [SerializeField] public Vector2 lastVerticalPushSourcePos = Vector2.zero;
@@ -38,6 +37,7 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
     [SerializeField] public float squishDist = 0.85f;
     [SerializeField] public bool debugMovement = false;
     [SerializeField] public float debugMovementDuration = 1.5f;
+    [SerializeField] public float insideContactDistance = 0.1f;
 
     [SerializeField] public ECharacterType characterType = 0;
 
@@ -275,7 +275,7 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
         for (int i = 0; i < horizontalHitCount; i++)
         {
             if (horizontalRaycastHits[i].collider == collider) continue;
-            horizontalHitAngle = Vector2.Angle(horizontalRaycastHits[i].normal, Vector2.up);
+            horizontalHitAngles[i] = Vector2.Angle(horizontalRaycastHits[i].normal, Vector2.up);
             // transform.position = horizontalDirection * horizontalRaycastHits[i].distance;
 
             bool newContact = false;
@@ -295,7 +295,7 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
                 contactObjects[contactObjectCount] = horizontalRaycastHits[i].collider.gameObject;
                 contactObjectCount++;
                 velocity.x = 0f;
-                Debug.DrawRay(transform.position, horizontalRaycastHits[i].normal, Color.red);
+                //Debug.DrawRay(transform.position, horizontalRaycastHits[i].normal, Color.red);
                 foreach (var ability in movementAbilities)
                 {
                     ability.OnContact(horizontalRaycastHits[i]);
@@ -304,7 +304,44 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
 
             horizontalPushSource = horizontalRaycastHits[i].transform;
             lastHorizontalPushSourcePos = horizontalPushSource.position;
-            Debug.DrawRay(horizontalRaycastHits[i].point, horizontalRaycastHits[i].normal, Color.blue);
+            // Debug.DrawRay(horizontalRaycastHits[i].point, horizontalRaycastHits[i].normal, Color.blue);
+            Debug.DrawLine(transform.position, horizontalRaycastHits[i].point, Color.blue);
+
+            float dist = Vector2.Distance(transform.position, horizontalRaycastHits[i].point);
+            if (dist < insideContactDistance && !ignorePush)
+            {
+                Debug.Log("Stuck inside (horiz) " + dist);
+                shouldRespawn = true;
+            }
+
+        }
+
+        if (horizontalHitCount > 1)
+        {
+            bool inAngle1 = Mathf.DeltaAngle(90f, horizontalHitAngles[0]) < 45f;
+            bool inAngle2 = Mathf.DeltaAngle(90f, horizontalHitAngles[1]) < 45f;
+            if (inAngle1 && inAngle2)
+            {
+                float point1X = verticalRaycastHits[0].point.x;
+                float point2X = verticalRaycastHits[1].point.x;
+
+                float posX = transform.position.x;
+                float dist = Mathf.Infinity;
+                if (point1X > posX && point2X < posX)
+                {
+                    dist = point1X - point2X;
+                }
+                else if (point1X < posX && point2X > posX)
+                {
+                    dist = point2X - point1X;
+                }
+
+                if (dist < squishDist && !ignorePush)
+                {
+                    //Debug.Log("Squished " + dist);
+                    shouldRespawn = true;
+                }
+            }
         }
 
         // vertical move
@@ -313,7 +350,7 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
         for (int i = verticalHitCount - 1; i >= 0; i--)
         {
             if (verticalRaycastHits[i].collider == collider) continue;
-            verticalHitAngle = Vector2.Angle(verticalRaycastHits[i].normal, Vector2.up);
+            verticalHitAngles[i] = Vector2.Angle(verticalRaycastHits[i].normal, Vector2.up);
             // transform.position = verticalDirection * verticalRaycastHits[i].distance;
 
             bool newContact = false;
@@ -333,7 +370,7 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
                 contactObjects[contactObjectCount] = verticalRaycastHits[i].collider.gameObject;
                 contactObjectCount++;
                 velocity.y = 0f;
-                Debug.DrawRay(transform.position, verticalRaycastHits[i].normal, Color.green);
+                //Debug.DrawRay(transform.position, verticalRaycastHits[i].normal, Color.green);
                 foreach (var ability in movementAbilities)
                 {
                     ability.OnContact(verticalRaycastHits[i]);
@@ -343,28 +380,42 @@ public class Character2DMovementController : GenericCharacter2DMovementControlle
 
             verticalPushSource = verticalRaycastHits[i].transform;
             lastVerticalPushSourcePos = verticalPushSource.position;
-            Debug.DrawRay(verticalRaycastHits[i].point, verticalRaycastHits[i].normal, Color.blue);
+            // Debug.DrawRay(verticalRaycastHits[i].point, verticalRaycastHits[i].normal, Color.blue);
+            Debug.DrawLine(transform.position, verticalRaycastHits[i].point, Color.yellow);
+
+            float dist = Vector2.Distance(transform.position, verticalRaycastHits[i].point);
+            if (dist < insideContactDistance && !ignorePush)
+            {
+                Debug.Log("Stuck inside (vert) " + dist);
+                shouldRespawn = true;
+            }
         }
 
         if (verticalHitCount > 1)
         {
-            float point1 = verticalRaycastHits[0].point.y;
-            float point2 = verticalRaycastHits[1].point.y;
-            float posY = transform.position.y;
-            float dist = Mathf.Infinity;
-            if (point1 > posY && point2 < posY)
+            bool inAngle1 = Mathf.DeltaAngle(0f, verticalHitAngles[0]) < 45f;
+            bool inAngle2 = Mathf.DeltaAngle(0f, verticalHitAngles[1]) < 45f;
+            if (inAngle1 && inAngle2)
             {
-                dist = point1 - point2;
-            }
-            else if (point1 < posY && point2 > posY)
-            {
-                dist = point2 - point1;
-            }
+                float point1Y = verticalRaycastHits[0].point.y;
+                float point2Y = verticalRaycastHits[1].point.y;
 
-            if (dist < squishDist && !ignorePush)
-            {
-                Debug.Log("Squished");
-                shouldRespawn = true;
+                float posY = transform.position.y;
+                float dist = Mathf.Infinity;
+                if (point1Y > posY && point2Y < posY)
+                {
+                    dist = point1Y - point2Y;
+                }
+                else if (point1Y < posY && point2Y > posY)
+                {
+                    dist = point2Y - point1Y;
+                }
+
+                if (dist < squishDist && !ignorePush)
+                {
+                    //Debug.Log("Squished " + dist);
+                    shouldRespawn = true;
+                }
             }
         }
 

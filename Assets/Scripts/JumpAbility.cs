@@ -57,7 +57,7 @@ public class JumpAbility : Character2DMovementAbility
                 return;
             } else {
                 for (int i = 0; i < controller.horizontalHitCount; i++) {
-                    if (controller.horizontalHitAngle == 90f) {
+                    if (controller.horizontalHitAngles[i] == 90f) {
                         // to the left or right
                         currentVelocity.y = 0f;
                         isJumping = true;

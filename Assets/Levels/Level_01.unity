@@ -371,23 +371,23 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2863105002727386930, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.00000011920929
+      value: -0.84615386
       objectReference: {fileID: 0}
     - target: {fileID: 2863105002727386930, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -12
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 2863105003433058616, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: orthographic size
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2863105003433058617, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.00000011920929
+      value: -0.84615386
       objectReference: {fileID: 0}
     - target: {fileID: 2863105003433058617, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -12
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 2863105003680772761, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: m_MaximumOrthoSize
@@ -400,6 +400,10 @@ PrefabInstance:
     - target: {fileID: 5410708407856147089, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: characterType
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410708407856147089, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
+      propertyPath: insideContactDistance
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5410708407856147089, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: movementAbilities.Array.size
@@ -424,6 +428,10 @@ PrefabInstance:
     - target: {fileID: 5410708408604881814, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410708408604881817, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
+      propertyPath: insideContactDistance
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5410708408604881817, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: movementAbilities.Array.size
@@ -994,14 +1002,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2122662231}
-  m_LocalRotation: {x: 0, y: -0, z: 0.7071068, w: -0.7071068}
-  m_LocalPosition: {x: -8.999998, y: 6.500001, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0.7071069, w: -0.70710677}
+  m_LocalPosition: {x: 9.000001, y: 3.499999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 205903278}
   m_Father: {fileID: 0}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 270}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 450}
 --- !u!1001 &5708815279882439893
 PrefabInstance:
   m_ObjectHideFlags: 0
