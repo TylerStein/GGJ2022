@@ -14,6 +14,7 @@ public enum EInputSnap
 public class PlayerController : MonoBehaviour
 {
     public Animator squashStretchAnimator;
+    public PlayerFXController fxController;
     public SpriteRenderer spriteRenderer;
     public GenericCharacter2DMovementController movement;
     public Animator playerAnimator;
@@ -34,6 +35,7 @@ public class PlayerController : MonoBehaviour
         if (groundedLastFrame != movement.isGrounded) {
             if (movement.isGrounded) {
                 squashStretchAnimator.SetBool("fall", false);
+                fxController.PlayLanding();
                 //squashStretchController.ResetScale();
                 //squashStretchController.BounceVertSquash();
             } else {
@@ -43,6 +45,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        fxController.PlayMove(movement.MoveInputX);
         groundedLastFrame = movement.isGrounded;
     }
 

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class BubbleSpawner : MonoBehaviour
 {
+    public WorldSpawnManager spawnManager;
     public ECharacterType forCharacter = ECharacterType.LAX;
-    public GameObject bubblePrefab;
     public float spawnEverySeconds = 2f;
     public float despawnAfter = 10f;
     public float spawnUpOffset = 0.5f;
@@ -41,8 +41,10 @@ public class BubbleSpawner : MonoBehaviour
 
     public void Spawn()
     {
-        GameObject bubble = Instantiate(bubblePrefab, transform.position + (transform.up * spawnUpOffset), Quaternion.identity);
+        GameObject bubble = spawnManager.bubbleRecycler.GetOne();
         bubble.transform.parent = transform;
+        bubble.transform.position = transform.position + (transform.up * spawnUpOffset);
+        bubble.transform.rotation = Quaternion.identity;
 
         Bubble script = bubble.GetComponent<Bubble>();
         script.SetSpawnData(transform.up, bubbleSpeed, despawnAfter);

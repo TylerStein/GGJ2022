@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2196247165524142282}
   - component: {fileID: 1260751836938196296}
-  - component: {fileID: 890393883212942578}
   m_Layer: 8
   m_Name: Platform
   m_TagString: Untagged
@@ -58,23 +57,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.7, y: 0.7}
   m_EdgeRadius: 0
---- !u!114 &890393883212942578
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1284105348846279444}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 664c0e1d625c1ce4480f8139924e6f3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  destroyAfterStayTime: 3
-  expectedTag: Player
-  destroyObject: {fileID: 7768149463734572267}
-  stayTimer: 0
-  expectedIsStaying: 0
 --- !u!1 &7768149463734572267
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,7 +101,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7768149463734572267}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13bf449268a58d248a16534cf9cd4b48, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d716ed89b4bdcb4095f4e213bfd898a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerTag: Player
