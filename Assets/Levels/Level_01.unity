@@ -351,7 +351,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 587499304}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71f4c052bb829aa489fe57514407407a, type: 3}
+  m_Script: {fileID: 11500000, guid: c5f2677f835a58f4593697b0984800f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerTag: Player
@@ -667,10 +667,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1126491100}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0eac9f2f34b5d34691fb42f31745b40, type: 3}
+  m_Script: {fileID: 11500000, guid: 06260216d4c054144801e64cb4e13b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextLevelName: Level_01
+  nextLevelName: 
   exit1: {fileID: 1246861549}
   exit2: {fileID: 587499309}
 --- !u!1 &1246861544
@@ -814,7 +814,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1246861544}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71f4c052bb829aa489fe57514407407a, type: 3}
+  m_Script: {fileID: 11500000, guid: c5f2677f835a58f4593697b0984800f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerTag: Player
@@ -902,6 +902,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnManager: {fileID: 1085099036}
+  bubbleRecycler:
+    prefab: {fileID: 0}
+    initialBuffer: 10
+    capacityBuffer: 10
+    container: {fileID: 0}
   forCharacter: 0
   spawnEverySeconds: 2
   despawnAfter: 10
@@ -1174,6 +1179,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnManager: {fileID: 1085099036}
+  bubbleRecycler:
+    prefab: {fileID: 0}
+    initialBuffer: 10
+    capacityBuffer: 10
+    container: {fileID: 0}
   forCharacter: 1
   spawnEverySeconds: 2
   despawnAfter: 10

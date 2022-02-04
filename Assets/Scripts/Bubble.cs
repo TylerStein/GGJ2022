@@ -15,11 +15,13 @@ public class Bubble : MonoBehaviour
     public Color squishColor = Color.white;
     public GameObject platformObject;
     public SpriteRenderer spriteRenderer;
+    public PrefabRecycler recycler;
 
     private Vector3 moveDirection = Vector3.up;
     private float moveSpeed = 5f;
     private float despawnAfter = 10f;
     private float despawnTimer = 0f;
+
 
     private BubbleAbility activeBubbleAbility;
 
@@ -56,11 +58,17 @@ public class Bubble : MonoBehaviour
         despawnTimer += Time.deltaTime;
         if (despawnTimer >= despawnAfter)
         {
-            Destroy(gameObject);
+            Despawn();
         } else
         {
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
         }
+    }
+
+    public void Despawn()
+    {
+        despawnTimer = 0f;
+        recycler.ReturnOne(gameObject);
     }
 
     public void OnTriggerEnter2D(Collider2D collision)

@@ -5,6 +5,7 @@ using UnityEngine;
 public class BubbleSpawner : MonoBehaviour
 {
     public WorldSpawnManager spawnManager;
+    public PrefabRecycler bubbleRecycler;
     public ECharacterType forCharacter = ECharacterType.LAX;
     public float spawnEverySeconds = 2f;
     public float despawnAfter = 10f;
@@ -18,6 +19,7 @@ public class BubbleSpawner : MonoBehaviour
     private void Awake()
     {
         spawnTimer = spawnTimerOffset;
+        bubbleRecycler = FindObjectOfType<WorldSpawnManager>().bubbleRecycler;
     }
 
     // Update is called once per frame
@@ -47,6 +49,7 @@ public class BubbleSpawner : MonoBehaviour
         bubble.transform.rotation = Quaternion.identity;
 
         Bubble script = bubble.GetComponent<Bubble>();
+        script.recycler = bubbleRecycler;
         script.SetSpawnData(transform.up, bubbleSpeed, despawnAfter);
         script.SetCharacter(forCharacter);
     }

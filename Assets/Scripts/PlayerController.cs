@@ -45,7 +45,10 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        fxController.PlayMove(movement.MoveInputX);
+        if (movement.isGrounded)
+        {
+            fxController.PlayMove(movement.MoveInputX);
+        }
         groundedLastFrame = movement.isGrounded;
     }
 
