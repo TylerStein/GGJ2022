@@ -376,11 +376,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2863105002727386930, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.00000011920929
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2863105002727386930, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: m_LocalPosition.z
       value: -12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2863105002727386933, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
+      propertyPath: m_Lens.OrthographicSize
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2863105003433058616, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: orthographic size
@@ -388,11 +392,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2863105003433058617, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.00000011920929
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2863105003433058617, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: m_LocalPosition.z
       value: -12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2863105003433058617, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2863105003433058617, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2863105003680772761, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
+      propertyPath: m_DeadZoneWidth
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 2863105003680772761, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
+      propertyPath: m_DeadZoneHeight
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2863105003680772761, guid: b8e4f54bd57cd144b837b79f42ba980c, type: 3}
       propertyPath: m_MaximumOrthoSize

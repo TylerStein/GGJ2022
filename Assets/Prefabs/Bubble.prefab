@@ -44,7 +44,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.16}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -114,6 +114,11 @@ MonoBehaviour:
   squishColor: {r: 1, g: 1, b: 1, a: 1}
   platformObject: {fileID: 1284105348846279444}
   spriteRenderer: {fileID: 2757562886963031275}
+  recycler:
+    prefab: {fileID: 0}
+    initialBuffer: 10
+    capacityBuffer: 10
+    container: {fileID: 0}
 --- !u!58 &7129980540275085353
 CircleCollider2D:
   m_ObjectHideFlags: 0

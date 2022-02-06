@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 127ed506fa1a51745b6165193992ce9a, type: 3}
   m_Name: PlayerMovement
   m_EditorClassIdentifier: 
-  gravity: {x: 0, y: -150}
-  minVelocityY: -50
+  gravity: {x: 0, y: -100}
+  minVelocityY: -40
   groundMoveAccelerationX: 20
   groundReverseAccelerationX: 400
   groundStopDecelerationX: 250
@@ -22,9 +22,9 @@ MonoBehaviour:
   airReverseAccelerationX: 400
   airStopDecelerationX: 250
   airMaxVelocityX: 14
-  jumpMaxVelocityY: 6
-  jumpBoostMaxVelocityY: 45
-  jumpAccelerationY: 38
+  jumpMaxVelocityY: 4
+  jumpBoostMaxVelocityY: 30
+  jumpAccelerationY: 30
   jumpBoostDecayY: 20
   airDashMaxVelocityXY: 35
   airDashAccelerationXY: 40
